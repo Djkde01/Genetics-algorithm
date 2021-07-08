@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import math
 
+
+@dataclass(eq=True, frozen=True)
 class City:
     name: str
     x: int

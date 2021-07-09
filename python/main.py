@@ -1,15 +1,21 @@
-from utils import cross, generate_cities, generate_population, select_parents
+from utils import cross, generate_cities, generate_population, mutate, select_parents
 
-all_cities = generate_cities(10, 0, 0, 100, 100)
+n_cities = 20
+population_size = 100
+parents_size = 50
+max_generations = 500
 
-population = generate_population(all_cities, 50)
+all_cities = generate_cities(n_cities, 0, 0, 100, 100)
 
-selected_parents = select_parents(population, 10)
+population = generate_population(all_cities, population_size)
 
-print(len(selected_parents))
+for generator_id in range(max_generations):
+    best_route = sorted(population, key=lambda route: route.distance)[0]
+    print(f"{generator_id}: {best_route.distance}")
+    selected_parents = select_parents(population, parents_size)
 
-new_childrens = cross(selected_parents, 50)
+    new_childrens = cross(selected_parents, population_size)
 
-population = selected_parents + new_childrens
+    mutated_childrens = mutate(new_childrens)
 
-print(len(population))
+    population = selected_parents + mutated_childrens

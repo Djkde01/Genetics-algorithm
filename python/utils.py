@@ -6,7 +6,7 @@ from copy import deepcopy
 
 
 def generate_cities(
-    city_count: int, minx: int, miny: int, maxx: int, maxy: int
+    city_count, minx, miny, maxx, maxy
 ):
     cities = set()
     with open("cities.csv", encoding="utf8") as readable:
@@ -36,10 +36,8 @@ def select_parents(population, num_parents):
 def _swap_parents(parent1, parent2):
     child = deepcopy(parent2)
 
-    elements = 3
-
     for position_p1, value_p1 in enumerate(parent1):
-        position_p2 = parent2.index(value_p1)
+        position_p2 = child.index(value_p1)
         child[position_p2] = child[position_p1]
         child[position_p1] = value_p1
     return child
@@ -54,3 +52,19 @@ def cross(best_parents, population_size):
         new_route = Route(_swap_parents(parent1.cities, parent2.cities))
         new_children.append(new_route)
     return new_children
+
+
+def mutate(new_childrens):
+    mutations = []
+    for child in new_childrens:
+        cities = deepcopy(child.cities)
+        if 0.5 > random.random():
+            swap_from = random.randint(0, len(cities) - 1)
+            swap_to = random.randint(0, len(cities) - 1)
+            while swap_to == swap_from:
+                swap_to = random.randint(0, len(cities) - 1)
+            aux = cities[swap_to]
+            cities[swap_to] = cities[swap_from]
+            cities[swap_from] = aux
+        mutations.append(Route(cities))
+    return mutations
